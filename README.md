@@ -3,7 +3,7 @@
 Runs [dembrandt](https://github.com/dembrandt/dembrandt) on GitHub's servers so nothing is installed locally.
 
 1. Actions tab → "Extract design inspo" → "Run workflow".
-2. Enter the site URL, how many pages to crawl, and whether to also capture dark mode.
+2. Enter the site URL, the maximum number of pages to extract (pages are found through the site sitemap and merged into one result), and whether to also capture dark mode.
 3. When the run finishes, open it and download the `inspo-<n>` artifact zip.
 
 Inside the zip:

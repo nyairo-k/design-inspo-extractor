@@ -7,9 +7,9 @@ on:
         description: "Site to extract (include https://)"
         required: true
       pages:
-        description: "How many pages to crawl (1 = homepage only)"
+        description: "Max pages to extract across the site (sitemap discovery, merged result)"
         required: false
-        default: "3"
+        default: "30"
       dark_mode:
         description: "Also extract the dark-mode variant"
         type: boolean
@@ -26,20 +26,20 @@ jobs:
         uses: dembrandt/dembrandt@v0.38.0
         with:
           url: ${{ inputs.url }}
-          args: --design-md --html report-desktop.html --save-output --crawl ${{ inputs.pages }} --slow --wcag
+          args: --design-md --html report-desktop.html --save-output --sitemap --crawl ${{ inputs.pages }} --slow --wcag
 
       - name: Extract (mobile)
         uses: dembrandt/dembrandt@v0.38.0
         with:
           url: ${{ inputs.url }}
-          args: --mobile --html report-mobile.html --save-output --slow
+          args: --mobile --html report-mobile.html --save-output --sitemap --crawl ${{ inputs.pages }} --slow
 
       - name: Extract (dark mode)
         if: ${{ inputs.dark_mode }}
         uses: dembrandt/dembrandt@v0.38.0
         with:
           url: ${{ inputs.url }}
-          args: --dark-mode --html report-dark.html --save-output --slow
+          args: --dark-mode --html report-dark.html --save-output --sitemap --crawl ${{ inputs.pages }} --slow
 
       - name: Upload results
         uses: actions/upload-artifact@v4
