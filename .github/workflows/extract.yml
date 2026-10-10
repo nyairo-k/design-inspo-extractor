@@ -1,0 +1,53 @@
+name: Extract design inspo
+
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: "Site to extract (include https://)"
+        required: true
+      pages:
+        description: "How many pages to crawl (1 = homepage only)"
+        required: false
+        default: "3"
+      dark_mode:
+        description: "Also extract the dark-mode variant"
+        type: boolean
+        required: false
+        default: false
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Extract (desktop)
+        uses: dembrandt/dembrandt@v0.38.0
+        with:
+          url: ${{ inputs.url }}
+          args: --design-md --html report-desktop.html --save-output --crawl ${{ inputs.pages }} --slow --wcag
+
+      - name: Extract (mobile)
+        uses: dembrandt/dembrandt@v0.38.0
+        with:
+          url: ${{ inputs.url }}
+          args: --mobile --html report-mobile.html --save-output --slow
+
+      - name: Extract (dark mode)
+        if: ${{ inputs.dark_mode }}
+        uses: dembrandt/dembrandt@v0.38.0
+        with:
+          url: ${{ inputs.url }}
+          args: --dark-mode --html report-dark.html --save-output --slow
+
+      - name: Upload results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: inspo-${{ github.run_number }}
+          path: |
+            report-*.html
+            DESIGN.md
+            output/
+          if-no-files-found: warn
